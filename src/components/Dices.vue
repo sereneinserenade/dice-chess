@@ -5,12 +5,8 @@
     </div>
 
     <div class="buttons">
-      <div class="button white-button" @click="roll('white')">
-        Roll For White
-      </div>
-
-      <div class="button black-button" @click="roll('black')">
-        Roll For Black
+      <div class="button black-button" @click="roll()">
+        Roll
       </div>
     </div>
   </div>
@@ -30,6 +26,8 @@ export default class Dices extends Vue {
 
   indices: Array<number> = [1, 2, 3, 4, 5, 6];
 
+  squareColor = "";
+
   entities: Record<number, string> = {
     1: "pawn",
     2: "knight",
@@ -39,17 +37,29 @@ export default class Dices extends Vue {
     6: "king"
   };
 
-  roll(color: string): void {
+  roll(): void {
     const index = Math.floor(Math.random() * 6);
     const entityKey = this.indices[index];
     const piece = this.entities[entityKey];
+    this.squareColor = "";
     this.entity = [];
     this.entity.push(piece);
-    this.entity.push(color);
+    if (piece === "bishop") {
+      const index = Math.floor(Math.random() * 3);
+      if (index === 1) {
+        this.entity.push("white");
+        return;
+      }
+      if (index === 2) {
+        this.entity.push("black");
+        return;
+      }
+    }
+    this.entity.push("white");
   }
 
   mounted(): void {
-    this.roll("white");
+    this.roll();
   }
 }
 </script>

@@ -1,6 +1,8 @@
 <template>
   <div class="dices-container">
-    <div :class="[piece, color, 'square']"></div>
+    <div :class="squareColor">
+      <div :class="[piece, color, 'square']"></div>
+    </div>
   </div>
 </template>
 
@@ -14,6 +16,9 @@ export default class DicesObject extends Vue {
 
   @Prop({ type: String })
   color!: "white" | "black";
+
+  @Prop({ type: String, default: "" })
+  squareColor?: "";
 }
 </script>
 
@@ -22,5 +27,13 @@ export default class DicesObject extends Vue {
 .square {
   width: 200px;
   height: 200px;
+}
+
+.black-square {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.white-square {
+  background: rgba(255, 255, 255, 0.7);
 }
 </style>
