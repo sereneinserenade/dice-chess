@@ -1,7 +1,7 @@
 <template>
   <div class="dices-container">
     <div class="dices">
-      <dice-object :color="entity[1]" :piece="entity[0]" />
+      <dice-object ref="diceObject" :color="entity[1]" :piece="entity[0]" />
     </div>
 
     <div class="buttons">
@@ -37,6 +37,8 @@ export default class Dices extends Vue {
     6: "king"
   };
 
+  lastPiece = "";
+
   roll(): void {
     const index = Math.floor(Math.random() * 6);
     const entityKey = this.indices[index];
@@ -44,6 +46,7 @@ export default class Dices extends Vue {
     this.squareColor = "";
     this.entity = [];
     this.entity.push(piece);
+    (this.$refs.diceObject as any).animate();
     if (piece === "bishop") {
       const index = Math.floor(Math.random() * 3);
       if (index === 1) {
@@ -56,6 +59,8 @@ export default class Dices extends Vue {
       }
     }
     this.entity.push("white");
+
+    this.lastPiece = piece;
   }
 
   mounted(): void {

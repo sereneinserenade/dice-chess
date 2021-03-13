@@ -1,7 +1,7 @@
 <template>
   <div class="dices-container">
     <div :class="squareColor">
-      <div :class="[piece, color, 'square']"></div>
+      <div :class="[piece, color, 'square', { animate: doAnimation }]"></div>
     </div>
   </div>
 </template>
@@ -19,6 +19,15 @@ export default class DicesObject extends Vue {
 
   @Prop({ type: String, default: "" })
   squareColor?: "";
+
+  doAnimation = false;
+
+  animate(): void {
+    this.doAnimation = true;
+    setTimeout(() => {
+      this.doAnimation = false;
+    }, 200);
+  }
 }
 </script>
 
@@ -27,6 +36,11 @@ export default class DicesObject extends Vue {
 .square {
   width: 200px;
   height: 200px;
+  transition: transform 0.2s ease-in-out;
+
+  &.animate {
+    transform: scale(1.05);
+  }
 }
 
 .black-square {
