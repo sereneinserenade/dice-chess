@@ -1,34 +1,33 @@
 <template>
   <div class="dices-container">
-    <div :class="squareColor">
-      <div :class="[piece, color, 'square', { animate: doAnimation }]"></div>
+    <div>
+      <div :class="[piece, color, 'square']"></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { ref, defineComponent } from "vue"
 
-@Component
-export default class DicesObject extends Vue {
-  @Prop({ type: String })
-  piece!: "pawn" | "knight" | "bishop" | "rook" | "queen" | "king";
+export default defineComponent({
+  name: "DiceObject",
+  props: {
+    piece: {
+      type: String,
+    },
+    color: {
+      type: String,
+      default: "white",
+    },
+  },
+  setup: () => {
+    const isBeingAnimated = ref<boolean>(false)
 
-  @Prop({ type: String })
-  color!: "white" | "black";
-
-  @Prop({ type: String, default: "" })
-  squareColor?: "";
-
-  doAnimation = false;
-
-  animate(): void {
-    this.doAnimation = true;
-    setTimeout(() => {
-      this.doAnimation = false;
-    }, 200);
-  }
-}
+    return {
+      isBeingAnimated,
+    }
+  },
+})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

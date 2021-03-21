@@ -5,68 +5,103 @@
     </div>
 
     <div class="buttons">
-      <div class="button black-button" @click="roll()">
-        Roll
-      </div>
+      <div class="button black-button" @click="roll()">Roll</div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import DiceObject from "./DiceObject.vue";
+import { ref, defineComponent, onMounted } from "vue"
+import DiceObject from "./DiceObject.vue"
 
-@Component({
+export default defineComponent({
+  name: "Dices",
   components: {
-    DiceObject
-  }
-})
-export default class Dices extends Vue {
-  entity: Array<string> = [];
+    DiceObject,
+  },
+  setup: () => {
+    const diceObject = ref(null)
 
-  indices: Array<number> = [1, 2, 3, 4, 5, 6];
+    const indices: Array<number> = Array.from({ length: 6 }, (_, i) => i + 1)
 
-  squareColor = "";
+    const entity = ref<Array<string>>([])
 
-  entities: Record<number, string> = {
-    1: "pawn",
-    2: "knight",
-    3: "bishop",
-    4: "rook",
-    5: "queen",
-    6: "king"
-  };
+    const squareColor = ref<string>("")
 
-  lastPiece = "";
-
-  roll(): void {
-    const index = Math.floor(Math.random() * 6);
-    const entityKey = this.indices[index];
-    const piece = this.entities[entityKey];
-    this.squareColor = "";
-    this.entity = [];
-    this.entity.push(piece);
-    (this.$refs.diceObject as any).animate();
-    if (piece === "bishop") {
-      const index = Math.floor(Math.random() * 3);
-      if (index === 1) {
-        this.entity.push("white");
-        return;
-      }
-      if (index === 2) {
-        this.entity.push("black");
-        return;
-      }
+    const entities: Record<number, string> = {
+      1: "pawn",
+      2: "knight",
+      3: "bishop",
+      4: "rook",
+      5: "queen",
+      6: "king",
     }
-    this.entity.push("white");
 
-    this.lastPiece = piece;
-  }
+    let lastPiece = ""
 
-  mounted(): void {
-    this.roll();
-  }
-}
+    const rotateValue = ref(0)
+
+    const rollLogic = () => {
+      const index = Math.floor(Math.random() * 6)
+      const entityKey = indices[index]
+      const piece = entities[entityKey]
+      if (piece === lastPiece) {
+        rollLogic()
+        return
+      }
+
+      squareColor.value = ""
+
+      entity.value = []
+
+      entity.value.push(piece)
+      lastPiece = piece
+
+      if (piece === "bishop") {
+        const index = Math.floor(Math.random() * 3)
+        if (index === 1) {
+          entity.value.push("white")
+          return
+        }
+        if (index === 2) {
+          entity.value.push("black")
+          return
+        }
+      }
+      entity.value.push("white")
+    }
+
+    let pieceUpdatedCount = 0
+
+    const roll = async () => {
+      pieceUpdatedCount = 0
+      rotateValue.value = 0
+      const counter = setInterval(() => {
+        if (pieceUpdatedCount < 6) {
+          rollLogic()
+          rotateValue.value = rotateValue.value + 60
+          pieceUpdatedCount += 1
+        } else {
+          clearInterval(counter)
+        }
+      }, 100)
+    }
+
+    onMounted(() => {
+      roll()
+    })
+
+    return {
+      diceObject,
+      indices,
+      entity,
+      squareColor,
+      entities,
+      roll,
+      rollLogic,
+    }
+  },
+})
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
