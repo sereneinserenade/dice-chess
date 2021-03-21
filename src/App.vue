@@ -5,18 +5,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import Dices from "./components/Dices.vue";
+import { defineComponent } from "vue"
+import { Dices } from "./components"
 
-@Component({
+export default defineComponent({
+  name: "App",
   components: {
     Dices
-  }
+  },
 })
-export default class App extends Vue {}
 </script>
 
-<style lang="scss">
+<style>
+@import "./assets/pieces.css";
+
 * {
   margin: 0;
   padding: 0;
